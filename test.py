@@ -91,11 +91,18 @@ class DFATest(unittest.TestCase):
 		self.assertTrue(dfa.evaluate_string('lollol'))
 		self.assertFalse(dfa.evaluate_string('loll'))
 
-	def test_backlash(self):
+	def test_backslash(self):
 		dfa = DFA('\\*')
 		self.assertTrue(dfa.evaluate_string('*'))
 		self.assertFalse(dfa.evaluate_string(''))
 		self.assertFalse(dfa.evaluate_string('**'))
+
+	def test_corner0(self):
+		dfa = DFA('b(ahigh)*alow')
+		self.assertTrue(dfa.evaluate_string('bahighalow'))
+		self.assertTrue(dfa.evaluate_string('balow'))
+		self.assertFalse(dfa.evaluate_string('bahigh'))
+		self.assertTrue(dfa.evaluate_string('bahighahighalow'))
 
 if __name__ == "__main__":
 	unittest.main()

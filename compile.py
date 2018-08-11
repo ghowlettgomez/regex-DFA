@@ -9,7 +9,7 @@ class DFA(object):
 	character, and the parentheses characters. They can
 	be escaped with a backslash.
 	"""
-	special_chars = set(['*', '|', '(', ')'])
+	special_chars = set(['*', '|', '(', ')', '\\'])
 
 	def __init__(self, string):
 		self.string = string
@@ -69,7 +69,8 @@ class DFA(object):
 					auto_node.add_to_jumpdict(new_char, new_node)
 					if new_char == '*':
 						for key in current_node.jumpdict:
-							auto_node.add_to_jumpdict(key, current_node.jumpdict[key])
+							for jump_node in current_node.jumpdict[key]:
+								auto_node.add_to_jumpdict(key, jump_node)
 						i += 1
 						if i == len(string):
 							finishing_nodes.append(auto_node)
@@ -110,7 +111,10 @@ class DFA(object):
 		"""
 		current_nodes = self.dfa
 		for character in given_string:
-			current_nodes = [current_node.jump_to_node(character) for current_node in current_nodes]
+			new_nodes = []
+			for current_node in current_nodes:
+				new_nodes += [new_node for new_node in current_node.jump_to_node(character)]
+			current_nodes = new_nodes
 		return any(current_node.valid for current_node in current_nodes)
 
 	def find_matching_paren(self, given_string):
@@ -173,7 +177,10 @@ class Node(object):
 		self._finishing_node = value
 
 	def add_to_jumpdict(self, character, Node):
-		self._jumpdict[character] = Node
+		if self.jumpdict.get(character):
+			self._jumpdict[character].append(Node)
+		else:
+			self._jumpdict[character] = [Node]
 
 	def jump_to_node(self, character):
 		if self.auto_move is not None:
@@ -181,5 +188,5 @@ class Node(object):
 		if self._jumpdict.get(character):
 			return self._jumpdict[character]
 		else:
-			return self.garbage_node
+			return [self.garbage_node]
 
