@@ -28,7 +28,7 @@ class DFA(object):
 		starting_nodes = [starting_node]
 		finishing_nodes = []
 		current_node = starting_node
-		previous_node = None
+		previous_nodes = []
 		i = 0
 		while i < len(string):
 			character = string[i]
@@ -43,12 +43,14 @@ class DFA(object):
 				i += 1 
 				if i == len(string):
 					finishing_nodes.append(current_node)
-					current_node = previous_node
+					finishing_nodes += previous_nodes
+					return starting_nodes, finishing_nodes
 				else:
 					new_node = Node(given_garbage_node=self.garbage_node)
 					current_node.add_to_jumpdict(string[i], new_node)
-					previous_node.add_to_jumpdict(string[i], new_node)
-					previous_node = current_node
+					for previous_node in previous_nodes:
+						previous_node.add_to_jumpdict(string[i], new_node)
+					previous_nodes = [current_node]
 					current_node = new_node
 					i += 1
 			elif character == ')':
@@ -78,12 +80,12 @@ class DFA(object):
 							new_node = Node(given_garbage_node=self.garbage_node)
 							current_node.add_to_jumpdict(string[i], new_node)
 							auto_node.add_to_jumpdict(string[i], new_node)
-							previous_node = auto_node
+							previous_nodes = [auto_node, current_node]
 							current_node = new_node
 							i += 1
 					else:
 						current_node = new_node
-						previous_node = auto_node
+						previous_nodes = [auto_node]
 						i += 1
 			elif character == '\\':
 				i += 1
@@ -93,13 +95,13 @@ class DFA(object):
 					newchar = string[i]
 					new_node = Node(given_garbage_node=self.garbage_node)
 					current_node.add_to_jumpdict(newchar, new_node)
-					previous_node = current_node
+					previous_nodes = [current_node]
 					current_node = new_node
 					i += 1
 			else:
 				new_node = Node(given_garbage_node=self.garbage_node)
 				current_node.add_to_jumpdict(character, new_node)
-				previous_node = current_node
+				previous_nodes = [current_node]
 				current_node = new_node
 				i += 1
 		finishing_nodes.append(current_node)

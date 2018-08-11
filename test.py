@@ -98,9 +98,13 @@ class DFATest(unittest.TestCase):
 		self.assertFalse(dfa.evaluate_string('**'))
 
 	def test_corner0(self):
-		dfa = DFA('b(ahigh)*alow')
+		dfa = DFA('b(ahigh)*a*low')
 		self.assertTrue(dfa.evaluate_string('bahighalow'))
 		self.assertTrue(dfa.evaluate_string('balow'))
+		self.assertTrue(dfa.evaluate_string('blow'))
+		self.assertTrue(dfa.evaluate_string('baaaalow'))
+		self.assertTrue(dfa.evaluate_string('bahighlow'))
+		self.assertTrue(dfa.evaluate_string('bahighaaaalow'))
 		self.assertFalse(dfa.evaluate_string('bahigh'))
 		self.assertTrue(dfa.evaluate_string('bahighahighalow'))
 
