@@ -91,5 +91,11 @@ class DFATest(unittest.TestCase):
 		self.assertTrue(dfa.evaluate_string('lollol'))
 		self.assertFalse(dfa.evaluate_string('loll'))
 
+	def test_backlash(self):
+		dfa = DFA('\\*')
+		self.assertTrue(dfa.evaluate_string('*'))
+		self.assertFalse(dfa.evaluate_string(''))
+		self.assertFalse(dfa.evaluate_string('**'))
+
 if __name__ == "__main__":
 	unittest.main()

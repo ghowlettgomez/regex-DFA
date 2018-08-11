@@ -84,6 +84,17 @@ class DFA(object):
 						current_node = new_node
 						previous_node = auto_node
 						i += 1
+			elif character == '\\':
+				i += 1
+				if i == len(string):
+					raise ValueError("Non terminating backlash")
+				else:
+					newchar = string[i]
+					new_node = Node(given_garbage_node=self.garbage_node)
+					current_node.add_to_jumpdict(newchar, new_node)
+					previous_node = current_node
+					current_node = new_node
+					i += 1
 			else:
 				new_node = Node(given_garbage_node=self.garbage_node)
 				current_node.add_to_jumpdict(character, new_node)
