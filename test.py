@@ -59,5 +59,37 @@ class DFATest(unittest.TestCase):
 		self.assertTrue(dfa.evaluate_string('lola'))
 		self.assertTrue(dfa.evaluate_string('lolaaaaaa'))
 
+	def test_paren0(self):
+		dfa = DFA('(lol)')
+		self.assertTrue(dfa.evaluate_string('lol'))
+		self.assertFalse(dfa.evaluate_string('(lol)'))
+
+	def test_paren1(self):
+		dfa = DFA('(lol|big)')
+		self.assertTrue(dfa.evaluate_string('lol'))
+		self.assertTrue(dfa.evaluate_string('big'))
+		self.assertFalse(dfa.evaluate_string('lol|big'))
+
+	def test_paren2(self):
+		dfa = DFA('(lola*)')
+		self.assertFalse(dfa.evaluate_string('lollol'))
+		self.assertTrue(dfa.evaluate_string('lol'))
+		self.assertTrue(dfa.evaluate_string('lola'))
+		self.assertTrue(dfa.evaluate_string('lolaaaaaa'))
+
+	def test_paren3(self):
+		dfa = DFA('(lol)abc')
+		self.assertTrue(dfa.evaluate_string('lolabc'))
+		self.assertFalse(dfa.evaluate_string('(lol)'))
+		self.assertFalse(dfa.evaluate_string('lol'))
+		self.assertFalse(dfa.evaluate_string('abc'))
+
+	def test_paren4(self):
+		dfa = DFA('(lol)*')
+		self.assertTrue(dfa.evaluate_string('lol'))
+		self.assertTrue(dfa.evaluate_string(''))
+		self.assertTrue(dfa.evaluate_string('lollol'))
+		self.assertFalse(dfa.evaluate_string('loll'))
+
 if __name__ == "__main__":
 	unittest.main()
